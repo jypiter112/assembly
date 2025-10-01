@@ -102,9 +102,14 @@ accept_loop:
     call accept
     mov r9, rax     ; client fd -> r9
 
+.read_loop:
     call read
+    cmp rax, 0
+    je .close_client
     call print      ; rax has length of buf
-
+    jmp .read_loop
+.close_client:
+    call closeclient
     jmp accept_loop   ; loop forever
 
     call closeall
